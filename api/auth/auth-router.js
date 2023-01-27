@@ -17,7 +17,7 @@ router.post('/register', async (req, res, next) => {
     next()
     }
   } catch {
-    res.json({ message: "username taken"})
+    res.status(400).json({ message: "username taken"})
   }
 
 
