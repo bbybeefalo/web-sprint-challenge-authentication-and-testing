@@ -10,8 +10,8 @@ router.post('/register', async (req, res, next) => {
     const newUser = { username, password: hash }
     const user = await db('users').insert(newUser)
     const thing = await db('users').where({id: user[0]})
-    console.log(thing)
-    res.json(thing)
+    console.log(thing[0])
+    res.json(thing[0])
     next()
   } catch {
     res.json({ message: "argh"})
