@@ -6,15 +6,18 @@ const db = require('../../data/dbConfig')
 router.post('/register', async (req, res, next) => {
   try {
     const { username, password } = req.body
+    if (!username || !password) {
+      res.json({ message: "username and password required"})
+    } else {
     const hash = bcrypt.hashSync(password, 8)
     const newUser = { username, password: hash }
     const user = await db('users').insert(newUser)
     const thing = await db('users').where({id: user[0]})
-    console.log(thing[0])
     res.json(thing[0])
     next()
+    }
   } catch {
-    res.json({ message: "argh"})
+    res.json({ message: "username taken"})
   }
 
 
