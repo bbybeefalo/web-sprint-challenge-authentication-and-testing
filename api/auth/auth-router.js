@@ -48,18 +48,21 @@ router.post('/register', async (req, res, next) => {
   */
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const { username, password } = req.body
     if (!username || !password) {
       res.status(400).json({ message: "username and password required" })
-    } else if (username && password){
+    } else if (username && password) {
       const [user] = await db('users').where({ username: username })
-      if (user && bcrypt.compareSync(password, user.password)) {
-        req.session.user = user
-        res.json({ message: `welcome, ${user.username}` })
-      }
-    }
+      if (!user) {
+        res.status(400).json({message: "invalid credentials"})
+      } else if (user) {
+        (user && bcrypt.compareSync(password, user.password)) 
+          req.session.user = user
+          res.json({ message: `welcome, ${user.username}` })
+      }}
+  
   } catch (err) {
     res.status(400).json({ message: "invalid credentials" })
   }
