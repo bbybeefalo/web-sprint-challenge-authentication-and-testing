@@ -57,10 +57,12 @@ router.post('/login', async (req, res, next) => {
       const [user] = await db('users').where({ username: username })
       if (!user) {
         res.status(400).json({message: "invalid credentials"})
-      } else if (user) {
-        (user && bcrypt.compareSync(password, user.password)) 
+      } else if (user && bcrypt.compareSync(password, user.password)) {
           req.session.user = user
           res.json({ message: `welcome, ${user.username}` })
+      } else {
+        res.status(400).json({message: "invalid credentials"})
+
       }}
   
   } catch (err) {
