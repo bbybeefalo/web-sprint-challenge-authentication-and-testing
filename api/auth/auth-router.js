@@ -7,17 +7,17 @@ router.post('/register', async (req, res, next) => {
   try {
     const { username, password } = req.body
     if (!username || !password) {
-      res.status(400).json({ message: "username and password required"})
+      res.status(400).json({ message: "username and password required" })
     } else {
-    const hash = bcrypt.hashSync(password, 8)
-    const newUser = { username, password: hash }
-    const user = await db('users').insert(newUser)
-    const thing = await db('users').where({id: user[0]})
-    res.json(thing[0])
-    next()
+      const hash = bcrypt.hashSync(password, 8)
+      const newUser = { username, password: hash }
+      const user = await db('users').insert(newUser)
+      const thing = await db('users').where({ id: user[0] })
+      res.json(thing[0])
+      next()
     }
   } catch {
-    res.status(400).json({ message: "username taken"})
+    res.status(400).json({ message: "username taken" })
   }
 
 
@@ -52,18 +52,16 @@ router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body
     if (!username || !password) {
-      res.status(400).json({message : "username and password required"})
-    }
-    const [user] = await db('users').where({ username: username })
-    if (user && bcrypt.compareSync(password, user.password)) {
-      req.session.user = user
-      res.json({message: `welcome, ${user.username}`})
+      res.status(400).json({ message: "username and password required" })
     } else {
-      res.status(400).json({message: `invalid credentials`})
+      const [user] = await db('users').where({ username: username })
+      if (user && bcrypt.compareSync(password, user.password)) {
+        req.session.user = user
+        res.json({ message: `welcome, ${user.username}` })
+      }
     }
-
   } catch (err) {
-    res.json({ message: "womp womp"})
+    res.json({ message: "invalid credentials" })
   }
 
 
