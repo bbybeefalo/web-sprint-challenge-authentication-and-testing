@@ -1,5 +1,9 @@
 module.exports = (req, res, next) => {
-  console.log('i protecc')
+  if (req.session.user) {
+    next()
+  } else {
+    res.status(401).json({message: "token required"})
+  }
   next();
   /*
     IMPLEMENT
