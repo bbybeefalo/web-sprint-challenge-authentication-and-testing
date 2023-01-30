@@ -60,6 +60,7 @@ router.post('/login', async (req, res, next) => {
         res.status(400).json({message: "invalid credentials"})
       } else if (user && bcrypt.compareSync(password, user.password)) {
           const token = buildToken(user)
+          req.session.user = user
           res.json({ message: `welcome, ${user.username}`, token: token})
       } else {
         res.status(400).json({message: "invalid credentials"})
