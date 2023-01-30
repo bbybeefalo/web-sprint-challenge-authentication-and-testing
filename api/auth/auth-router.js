@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body
     if (!username || !password) {
       res.status(400).json({ message: "username and password required" })
-    } else {
+    } else if (username && password){
       const [user] = await db('users').where({ username: username })
       if (user && bcrypt.compareSync(password, user.password)) {
         req.session.user = user
