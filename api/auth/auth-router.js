@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs')
 const db = require('../../data/dbConfig')
+const jwt = require('jsonwebtoken')
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -58,8 +59,8 @@ router.post('/login', async (req, res, next) => {
       if (!user) {
         res.status(400).json({message: "invalid credentials"})
       } else if (user && bcrypt.compareSync(password, user.password)) {
-          req.session.user = user
-          res.json({ message: `welcome, ${user.username}` })
+          const token = buildToken(user)
+          res.json({ message: `welcome, ${user.username}`, token: token})
       } else {
         res.status(400).json({message: "invalid credentials"})
 
@@ -94,5 +95,15 @@ router.post('/login', async (req, res, next) => {
       the response body should include a string exactly as follows: "invalid credentials".
   */
 });
+function buildToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username,
+  }
+  const options = {
+    expiresIn: '1d',
+  }
+  return jwt.sign(payload, 'the fish flies at night', options )
+}
 
 module.exports = router;
