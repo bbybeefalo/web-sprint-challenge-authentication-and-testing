@@ -1,10 +1,19 @@
 
+const jwt = require('jsonwebtoken')
+
 module.exports = (req, res, next) => {
-  if (req.session.user) {
-    next()
-  } else {
-    res.status(401).json({ message: "token required"})
+  const token = req.headers.authorization
+  if (!token) {
+     return res.status(401).json({message: "token required"})
   }
+  jwt.verify(token, 'the fish flies at night', (err, ) => {
+    if (err) {
+      res.json(401).json({message: "token invalid"})
+   } else {
+      next()
+    }
+    })
+  
  
   /*
     IMPLEMENT
